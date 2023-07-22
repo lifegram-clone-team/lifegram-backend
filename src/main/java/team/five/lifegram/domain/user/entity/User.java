@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import team.five.lifegram.domain.auth.dto.SignupRequestDto;
 
 import java.time.LocalDateTime;
 
@@ -18,16 +17,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 256, nullable = false)
+    @Column(nullable = false)
     private String email;
 
-    @Column(length = 32, nullable = false)
+    @Column(nullable = false)
     private String userName;
 
-    @Column(length = 256, nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(length = 256, nullable = false)
+    @Column(nullable = false)
     private String img_url;
 
     @CurrentTimestamp

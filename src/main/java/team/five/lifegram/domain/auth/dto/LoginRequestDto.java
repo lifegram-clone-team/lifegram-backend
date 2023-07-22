@@ -7,5 +7,4 @@ public record LoginRequestDto(
         String email,
         @Pattern(regexp = "^[a-zA-Z0-9]{8,16}$")
         String password
-) {
-}
+) {}
