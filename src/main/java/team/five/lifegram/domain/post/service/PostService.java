@@ -8,11 +8,16 @@ import org.springframework.web.multipart.MultipartFile;
 import team.five.lifegram.domain.comment.dto.CommentResponseDto;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
+import org.springframework.transaction.annotation.Transactional;
+import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
 import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.entity.User;
 import team.five.lifegram.domain.user.repository.UserRepository;
+
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -70,5 +75,20 @@ public class PostService {
                 .updatedAt(post.getUpdatedAt())
                 .comments(post.getComments().stream().map(CommentResponseDto::new).toList())
                 .build();
+    }
+
+    @Transactional
+    public LocalDateTime updatePost(Long postId, PostRequestDto postRequestDto) {
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new NoSuchElementException("게시글이 존재하지 않습니다."));
+        String newContent = postRequestDto.getContent();
+        if (newContent.length() > 1024) {
+            throw new IllegalArgumentException("글자 수가 1024자 이하여야 합니다.");
+        }
+        if (newContent.isEmpty()) {
+            throw new IllegalArgumentException("수정할 내용을 넣어주세요.");
+        }
+        post.update(postRequestDto.getContent());
+        return post.getUpdatedAt();
     }
 }
