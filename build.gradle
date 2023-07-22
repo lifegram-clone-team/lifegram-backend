@@ -51,10 +51,18 @@ dependencies {
 
 processResources.dependsOn('securityInfo')
 
-task securityInfo(type: Copy) {
-    from './lifegram-backend-security'
-    include '*.properties'
-    into './src/main/resources'
+task securityInfo() {
+    copy {
+        from './lifegram-backend-security/application.properties'
+        include '*.properties'
+        into './src/main/resources'
+    }
+
+    copy {
+        from './lifegram-backend-security'
+        include 'keystore.p12'
+        into './src/main/resources/ssl'
+    }
 }
 
 tasks.named('test') {
