@@ -40,7 +40,7 @@ public class Post {
 
     @JsonIgnore
     @OneToMany(mappedBy = "post")
-    private List<Comment> commentList = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public Post(String image_url, String content, User user) {
         this.image_url = image_url;
