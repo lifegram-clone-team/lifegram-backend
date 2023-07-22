@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
 import team.five.lifegram.domain.post.service.PostService;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/post")

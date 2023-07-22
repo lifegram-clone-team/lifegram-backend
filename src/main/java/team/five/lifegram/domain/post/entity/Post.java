@@ -17,12 +17,12 @@ import java.util.List;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(length = 256, nullable = false)
     private String imageUrl;
 
-    @Column(name = "content", nullable = false, length = 1024)
+    @Column(length = 1024, nullable = false)
     private String content;
 
     @CurrentTimestamp

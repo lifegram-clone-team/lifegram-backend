@@ -19,8 +19,8 @@ public class PostService {
         Sort.Direction direction = Sort.Direction.DESC;
         Sort sort = Sort.by(direction, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Post> postList = postRepository.findAll(pageable);
-        return postList.map(PostResponseDto::new);
+        Page<Post> posts = postRepository.findAll(pageable);
+        return posts.map(PostResponseDto::new);
 
     }
 }
