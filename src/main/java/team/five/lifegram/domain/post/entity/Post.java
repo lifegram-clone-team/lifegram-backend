@@ -34,4 +34,8 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     private List<Comment> commentList = new ArrayList<>();
+
+    public void update(String content) {
+        this.content = content;
+    }
 }
