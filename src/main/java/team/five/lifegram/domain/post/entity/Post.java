@@ -19,7 +19,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 256, nullable = false)
+    @Column(nullable = false)
     private String imageUrl;
 
     @Column(length = 1024, nullable = false)
