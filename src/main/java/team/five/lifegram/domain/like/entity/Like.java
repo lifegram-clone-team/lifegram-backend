@@ -6,11 +6,11 @@ import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.user.entity.User;
 
 @Getter
-//@Builder
+@Builder
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(name = "likes")
+@Table(name = "`like`")
 public class Like {
 
     @Id
@@ -30,12 +30,12 @@ public class Like {
         this.post = post;
     }
 
-    /*    public static Like likeOf(User user, Post post){
+        public static Like likeOf(User user, Post post){
         return Like.builder()
                 .user(user)
                 .post(post)
                 .build();
-    }*/
+    }
 
 }
 
