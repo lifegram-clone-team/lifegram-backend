@@ -31,7 +31,6 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    //이규행 : 코멘트 => user 연결 후 유저확인도 할 예정
     public void deleteComment(Long postId, Long commentId, Long userId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("없는 게시글입니다.")
