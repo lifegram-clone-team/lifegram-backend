@@ -1,11 +1,13 @@
 package team.five.lifegram.domain.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import team.five.lifegram.domain.comment.entity.Comment;
+import team.five.lifegram.domain.user.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ public class Post {
     private Long id;
 
     @Column(nullable = false)
-    private String imageUrl;
+    private String image_url;
 
     @Column(length = 1024, nullable = false)
     private String content;
@@ -32,6 +34,18 @@ public class Post {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "post")
     private List<Comment> commentList = new ArrayList<>();
+
+    public Post(String image_url, String content, User user) {
+        this.image_url = image_url;
+        this.content = content;
+        this.user = user;
+    }
+
 }
