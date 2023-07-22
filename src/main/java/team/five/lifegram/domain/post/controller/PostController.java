@@ -1,11 +1,14 @@
 package team.five.lifegram.domain.post.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
+import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
 import team.five.lifegram.domain.post.service.PostService;
 import team.five.lifegram.global.Security.AuthPayload;
@@ -23,13 +26,14 @@ public class PostController {
     }
 
     @PostMapping("")
-    public void createPost(@RequestPart String content, @RequestPart String image, @AuthenticationPrincipal AuthPayload authPayload) {
+    public void createPost(@Valid @RequestPart(name = "content") PostRequestDto postRequestDto, @RequestPart MultipartFile image, @AuthenticationPrincipal AuthPayload authPayload) {
         Long userId = authPayload.userId();
-        postService.createPost(content, image, userId);
+        postService.createPost(postRequestDto, image, userId);
     }
 
-    @GetMapping("{postId}")
+    @GetMapping("/{postId}")
     public DetailPostResponseDto getDetailPost(@PathVariable Long postId) {
         return postService.getDetailPost(postId);
     }
+
 }
