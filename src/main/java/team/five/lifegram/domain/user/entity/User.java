@@ -9,6 +9,7 @@ import team.five.lifegram.domain.auth.dto.SignupRequestDto;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
