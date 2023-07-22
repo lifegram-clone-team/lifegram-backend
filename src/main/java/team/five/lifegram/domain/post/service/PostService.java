@@ -1,14 +1,14 @@
 package team.five.lifegram.domain.post.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import team.five.lifegram.domain.comment.dto.CommentResponseDto;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
-import team.five.lifegram.domain.post.dto.PostRequestDto;
-import org.springframework.transaction.annotation.Transactional;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
 import team.five.lifegram.domain.post.entity.Post;
@@ -32,17 +32,7 @@ public class PostService {
         Sort sort = Sort.by(direction, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Post> posts = postRepository.findAll(pageable);
-        return posts.map((post)->PostResponseDto.builder()
-                .postId(post.getId())
-                .postImgUrl(post.getImage_url())
-                .content(post.getContent())
-                .likeCount(1L)
-                .isLike(false)
-                .commentCount(Long.valueOf(post.getComments().size()))
-                .writer(post.getUser().getUserName())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .build());
+        return posts.map(PostResponseDto::of);
     }
 
     public void createPost(PostRequestDto postRequestDto, MultipartFile image, Long userId) {
@@ -62,19 +52,7 @@ public class PostService {
     public DetailPostResponseDto getDetailPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(()->
                 new IllegalArgumentException("게시글이 존재하지 않습니다."));
-        return DetailPostResponseDto.builder()
-                .postId(post.getId())
-                .postImgUrl(post.getImage_url())
-                .content(post.getContent())
-                .likeCount(1L)
-                .isLike(false)
-                .commentCount(Long.valueOf(post.getComments().size()))
-                .writer(post.getUser().getUserName())
-                .writerImgUrl(post.getUser().getImg_url())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .comments(post.getComments().stream().map(CommentResponseDto::new).toList())
-                .build();
+        return DetailPostResponseDto.of(post);
     }
 
     @Transactional

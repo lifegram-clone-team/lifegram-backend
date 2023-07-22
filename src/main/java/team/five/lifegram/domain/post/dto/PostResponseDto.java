@@ -2,6 +2,7 @@ package team.five.lifegram.domain.post.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import team.five.lifegram.domain.post.entity.Post;
 
 import java.time.LocalDateTime;
 
@@ -17,4 +18,18 @@ public class PostResponseDto {
     private String writer;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public static PostResponseDto of(Post post){
+        return PostResponseDto.builder()
+                .postId(post.getId())
+                .postImgUrl(post.getImage_url())
+                .content(post.getContent())
+                .likeCount(1L)
+                .isLike(false)
+                .commentCount(Long.valueOf(post.getComments().size()))
+                .writer(post.getUser().getUserName())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .build();
+    }
 }
