@@ -1,0 +1,3 @@
+[submodule "lifegram-backend-security"]
+path = lifegram-backend-security
+url = https://github.com/lifegram-clone-team/lifegram-backend-security.git
