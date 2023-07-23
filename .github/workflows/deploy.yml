@@ -7,7 +7,8 @@ on:
 env:
   S3_BUCKET_NAME: lifgram-deploy-bucket
   PROJECT_NAME: lifegram
-  JAR_PATH: ./build/libs/lifegram-0.0.1-SNAPSHOT.jar
+  JAR_PATH: ./build/libs
+  JAR_NAME: lifegram-0.0.1-SNAPSHOT.jar
 
 
 jobs:
@@ -35,7 +36,7 @@ jobs:
         shell: bash
 
       - name: Make Directory for deliver
-        run: mkdir deploy && cp target/*.jar deploy/ && cp appspec.yml deploy/ && cp script/deploy.sh deploy/
+        run: mkdir deploy && cp $JAR_PATH/*.jar deploy/ && cp appspec.yml deploy/ && cp deploy.sh deploy/
 #
       - name: Make zip file
         run: zip -r ./$PROJECT_NAME.zip deploy
