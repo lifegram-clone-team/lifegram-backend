@@ -7,7 +7,8 @@ on:
 env:
   S3_BUCKET_NAME: lifgram-deploy-bucket
   PROJECT_NAME: lifegram
-  JAR_NAME: lifegram-0.0.1-SNAPSHOT.jar
+  JAR_PATH: ./build/libs/lifegram-0.0.1-SNAPSHOT.jar
+
 
 jobs:
   build:
@@ -32,10 +33,13 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
         shell: bash
+
+      - name: Make Directory for deliver
+        run: mkdir deploy && cp target/*.jar deploy/ && cp appspec.yml deploy/ && cp script/deploy.sh deploy/
 #
-#      - name: Make zip file
-#        run: zip -r ./$GITHUB_SHA.zip .
-#        shell: bash
+      - name: Make zip file
+        run: zip -r ./$PROJECT_NAME.zip deploy
+        shell: bash
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -44,6 +48,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # S3에 업로드
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./build/libs/$JAR_NAME s3://$S3_BUCKET_NAME/$PROJECT_NAME/$JAR_NAME
+        run: aws s3 cp --region ap-northeast-2 ./$PROJECT_NAME.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$PROJECT_NAME.zip
+
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name $PROJECT_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name codedeploy --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$PROJECT_NAME.zip
