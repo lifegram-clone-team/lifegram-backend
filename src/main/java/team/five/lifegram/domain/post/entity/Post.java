@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import team.five.lifegram.domain.comment.entity.Comment;
 import team.five.lifegram.domain.like.entity.Like;
 import team.five.lifegram.domain.user.entity.User;
+import team.five.lifegram.global.type.BaseTime;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
-public class Post {
+public class Post extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,18 +31,11 @@ public class Post {
     @Column(length = 2200, nullable = false)
     private String content;
 
-    @CurrentTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
