@@ -75,20 +75,13 @@ public class PostService {
         post.updateContent(postRequestDto.getContent());
     }
 
-    public List<UserProfilePostResponseDto> getUserProfilePost(Long userId, int page, int pageSize) {
-        User user = userRepository.findById(userId).orElseThrow(()->
+    public Page<UserProfilePostResponseDto> getUserProfilePost(int page, int size, Long userId) {
+        userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("존재하지 않는 사용자 입니다."));
-        List<Post> posts = user.getPosts();
-        int startIndex = page * pageSize;
-        int endIndex = Math.min(startIndex + pageSize, posts.size());
-        List<UserProfilePostResponseDto> userProfilePosts = new ArrayList<>();
-        for (int i = startIndex; i < endIndex; i++) {
-            Post post = posts.get(i);
-            UserProfilePostResponseDto userProfilePostDto = new UserProfilePostResponseDto();
-            userProfilePostDto.setPostId(post.getId());
-            userProfilePostDto.setProfileImgUrl(post.getImage_url());
-            userProfilePosts.add(userProfilePostDto);
-        }
-        return userProfilePosts;
+        Sort.Direction direction = Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Post> posts = postRepository.findByUserId(userId, pageable);
+        return posts.map(UserProfilePostResponseDto::new);
     }
 }

@@ -23,9 +23,6 @@ public class PostController {
 
     private final PostService postService;
 
-    private int pageSize = 12;
-    private int page = 0;
-
     @GetMapping("")
     public Page<PostResponseDto> getPosts(@RequestParam("page") int page, @RequestParam("size") int size, @AuthenticationPrincipal AuthPayload authPayload) {
         Long userId = authPayload.userId();
@@ -51,10 +48,8 @@ public class PostController {
     }
 
     @GetMapping("user")
-    public List<UserProfilePostResponseDto> getUserProfilePost (@AuthenticationPrincipal AuthPayload authPayload) {
+    public Page<UserProfilePostResponseDto> getUserProfilePost (@RequestParam("page") int page, @RequestParam("size") int size, @AuthenticationPrincipal AuthPayload authPayload) {
         Long userId = authPayload.userId();
-        List<UserProfilePostResponseDto> userProfilePosts = postService.getUserProfilePost(userId, page, pageSize);
-        page++;
-        return userProfilePosts;
+        return postService.getUserProfilePost(page-1, size, userId);
     }
 }
