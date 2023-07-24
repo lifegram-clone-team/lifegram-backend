@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import team.five.lifegram.domain.comment.entity.Comment;
+import team.five.lifegram.domain.like.entity.Like;
 import team.five.lifegram.domain.user.entity.User;
 
 import java.time.LocalDateTime;
@@ -41,6 +42,10 @@ public class Post {
     @JsonIgnore
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<Like> likes = new ArrayList<>();
+
 
     public Post(String image_url, String content, User user) {
         this.image_url = image_url;

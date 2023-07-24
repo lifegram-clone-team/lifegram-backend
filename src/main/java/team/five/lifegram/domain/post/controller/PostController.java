@@ -25,8 +25,9 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("")
-    public Page<PostResponseDto> getPosts(@RequestParam("page") int page, @RequestParam("size") int size) {
-        return postService.getPosts(page-1, size);
+    public Page<PostResponseDto> getPosts(@RequestParam("page") int page, @RequestParam("size") int size, @AuthenticationPrincipal AuthPayload authPayload) {
+        Long userId = authPayload.userId();
+        return postService.getPosts(page-1, size, userId);
     }
 
     @PostMapping("")
@@ -36,8 +37,9 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public DetailPostResponseDto getDetailPost(@PathVariable Long postId) {
-        return postService.getDetailPost(postId);
+    public DetailPostResponseDto getDetailPost(@PathVariable Long postId, @AuthenticationPrincipal AuthPayload authPayload) {
+        Long userId = authPayload.userId();
+        return postService.getDetailPost(postId, userId);
     }
 
     @PutMapping("/{postId}")
