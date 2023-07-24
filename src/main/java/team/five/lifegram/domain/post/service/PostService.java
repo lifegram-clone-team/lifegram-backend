@@ -17,7 +17,6 @@ import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.entity.User;
 import team.five.lifegram.domain.user.repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Service
@@ -63,17 +62,12 @@ public class PostService {
     }
 
     @Transactional
-    public LocalDateTime updatePost(Long postId, PostRequestDto postRequestDto) {
+    public void updatePost(Long postId, PostRequestDto postRequestDto, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("게시글이 존재하지 않습니다."));
-        String newContent = postRequestDto.getContent();
-        if (newContent.length() > 1024) {
-            throw new IllegalArgumentException("글자 수가 1024자 이하여야 합니다.");
+        if (post.getUser().getId() != userId) {
+            throw new IllegalArgumentException("이 게시글에 수정 권한이 없습니다.");
         }
-        if (newContent.isEmpty()) {
-            throw new IllegalArgumentException("수정할 내용을 넣어주세요.");
-        }
-        post.update(postRequestDto.getContent());
-        return post.getUpdatedAt();
+        post.updateContent(postRequestDto.getContent());
     }
 }

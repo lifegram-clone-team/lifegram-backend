@@ -4,7 +4,6 @@ package team.five.lifegram.domain.post.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,9 +12,6 @@ import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
 import team.five.lifegram.domain.post.service.PostService;
 import team.five.lifegram.global.Security.AuthPayload;
-
-import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,15 +39,8 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<LocalDateTime> updatePost (@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto) {
-        try {
-            LocalDateTime updatedAt = postService.updatePost(postId, postRequestDto);
-            return ResponseEntity.ok(updatedAt);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public void updatePost (@PathVariable Long postId, @Valid @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal AuthPayload authPayload) {
+        Long userId = authPayload.userId();
+        postService.updatePost(postId, postRequestDto, userId);
     }
-
 }
