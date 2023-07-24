@@ -22,7 +22,7 @@ public class AuthService {
                 .email(signupRequestDto.email())
                 .userName(signupRequestDto.userName())
                 .password(passwordEncoder.encode(signupRequestDto.password()))
-                .img_url("image/profile/default.jpeg")
+                .img_url("default.jpeg")
                 .build();
 
         userRepository.save(user);

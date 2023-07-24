@@ -27,17 +27,17 @@ public class S3Upload {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String uploadFiles(MultipartFile multipartFile) throws IOException {
+    public String uploadFiles(MultipartFile multipartFile, String path) throws IOException {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
-        return upload(uploadFile);
+        return upload(uploadFile, path);
     }
 
-    private String upload(File uploadFile) {
+    private String upload(File uploadFile, String path) {
         String fileName = uploadFile.getName();
-        String uploadImageUrl = putS3(uploadFile, fileName);
+        putS3(uploadFile, path + "/" + fileName);
         removeNewFile(uploadFile);
-        return uploadImageUrl;
+        return fileName;
     }
 
     private String putS3(File uploadFile, String fileName) {
