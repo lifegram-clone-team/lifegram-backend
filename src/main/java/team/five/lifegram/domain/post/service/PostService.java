@@ -70,4 +70,15 @@ public class PostService {
         }
         post.updateContent(postRequestDto.getContent());
     }
+
+    public void deletePost(Long postId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+        Post post = postRepository.findById(postId).orElseThrow(()->
+                new IllegalArgumentException("게시글이 존재하지 않습니다."));
+        if(!post.getUser().getId().equals(user.getId())){
+            throw new IllegalArgumentException("이 게시글에 삭제 권한이 없습니다.");
+        }
+        postRepository.delete(post);
+    }
 }
