@@ -23,13 +23,13 @@ public class DetailPostResponseDto {
     private LocalDateTime updatedAt;
     private List<CommentResponseDto> comments;
 
-    public static DetailPostResponseDto of(Post post) {
+    public static DetailPostResponseDto of(Post post, boolean isLike) {
         return DetailPostResponseDto.builder()
                 .postId(post.getId())
                 .postImgUrl(post.getImage_url())
                 .content(post.getContent())
-                .likeCount(1L)
-                .isLike(false)
+                .likeCount(Long.valueOf(post.getLikes().size()))
+                .isLike(isLike)
                 .commentCount(Long.valueOf(post.getComments().size()))
                 .writer(post.getUser().getUserName())
                 .writerImgUrl(post.getUser().getImg_url())

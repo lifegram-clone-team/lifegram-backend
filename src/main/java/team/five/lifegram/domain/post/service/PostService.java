@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import team.five.lifegram.domain.like.repository.LikeRepository;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
@@ -25,14 +26,17 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
     @Transactional(readOnly = true)
-    public Page<PostResponseDto> getPosts(int page, int size) {
+    public Page<PostResponseDto> getPosts(int page, int size, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new IllegalArgumentException("존재하지 않는 사용자 입니다."));
         Sort.Direction direction = Sort.Direction.DESC;
         Sort sort = Sort.by(direction, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Post> posts = postRepository.findAll(pageable);
-        return posts.map(PostResponseDto::of);
+        return posts.map((post)->PostResponseDto.of(post, likeRepository.existsByUserIdAndPostId(user.getId(), post.getId())));
     }
 
     public void createPost(PostRequestDto postRequestDto, MultipartFile image, Long userId) {
@@ -49,10 +53,13 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public DetailPostResponseDto getDetailPost(Long postId) {
+    public DetailPostResponseDto getDetailPost(Long postId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new IllegalArgumentException("존재하지 않는 사용자 입니다."));
         Post post = postRepository.findById(postId).orElseThrow(()->
                 new IllegalArgumentException("게시글이 존재하지 않습니다."));
-        return DetailPostResponseDto.of(post);
+
+        return DetailPostResponseDto.of(post, likeRepository.existsByUserIdAndPostId(user.getId(), post.getId()));
     }
 
     @Transactional

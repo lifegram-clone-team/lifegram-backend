@@ -20,14 +20,14 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static PostResponseDto of(Post post){
+    public static PostResponseDto of(Post post, boolean isLike){
         return PostResponseDto.builder()
                 .postId(post.getId())
                 .writerImgUrl(post.getUser().getImg_url())
                 .postImgUrl(post.getImage_url())
                 .content(post.getContent())
-                .likeCount(1L)
-                .isLike(false)
+                .likeCount(Long.valueOf(post.getLikes().size()))
+                .isLike(isLike)
                 .commentCount(Long.valueOf(post.getComments().size()))
                 .writer(post.getUser().getUserName())
                 .createdAt(post.getCreatedAt())
