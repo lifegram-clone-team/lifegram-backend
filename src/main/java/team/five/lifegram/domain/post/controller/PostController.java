@@ -41,15 +41,7 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<LocalDateTime> updatePost (@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto) {
-        try {
-            LocalDateTime updatedAt = postService.updatePost(postId, postRequestDto);
-            return ResponseEntity.ok(updatedAt);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<LocalDateTime> updatePost (@PathVariable Long postId, @Valid @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal AuthPayload authPayload) {
+        return ResponseEntity.ok(postService.updatePost(postId, postRequestDto, authPayload));
     }
-
 }

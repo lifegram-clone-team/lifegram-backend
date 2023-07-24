@@ -48,7 +48,7 @@ public class Post {
         this.user = user;
     }
 
-    public void update(String content) {
+    public void updateContent(String content) {
         this.content = content;
     }
 }
