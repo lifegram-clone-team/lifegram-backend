@@ -80,7 +80,7 @@ public class PostService {
         post.updateContent(postRequestDto.getContent());
     }
 
-
+    @Transactional(readOnly = true)
     public Page<UserProfilePostResponseDto> getUserProfilePost(int page, int size, Long userId) {
         userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 사용자 입니다."));

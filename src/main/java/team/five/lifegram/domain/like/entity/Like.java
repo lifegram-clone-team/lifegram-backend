@@ -18,11 +18,11 @@ public class Like {
     private Long id;
 
     //TODO fetch LAZY 걸어주셔야 합니다.
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
