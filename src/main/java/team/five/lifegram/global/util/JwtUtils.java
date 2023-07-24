@@ -13,7 +13,7 @@ import java.util.Map;
 public class JwtUtils {
     private static final String secretKey = "LifeGramKeyqazwsxedcddedwdwedewdwedwedeededeqwrer";
     private static final Key SIGNING_KEY = getSigningKey();
-    private static final Integer ACCESS_TOKEN_DURATION_SECONDS = 60 * 30;
+    private static final Integer ACCESS_TOKEN_DURATION_SECONDS = 60 * 60;
 
     public static TokenResponseDto generateToken(Long userId) {
         Instant now = Instant.now();

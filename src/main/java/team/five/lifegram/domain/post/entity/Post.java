@@ -25,7 +25,7 @@ public class Post {
     @Column(nullable = false)
     private String image_url;
 
-    @Column(length = 1024, nullable = false)
+    @Column(length = 2200, nullable = false)
     private String content;
 
     @CurrentTimestamp
@@ -40,10 +40,10 @@ public class Post {
     private User user;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Like> likes = new ArrayList<>();
 
 
