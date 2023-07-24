@@ -25,17 +25,5 @@ public class Like {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public Like(User user, Post post) {
-        this.user = user;
-        this.post = post;
-    }
-
-        public static Like likeOf(User user, Post post){
-        return Like.builder()
-                .user(user)
-                .post(post)
-                .build();
-    }
-
 }
 

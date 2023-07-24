@@ -31,7 +31,8 @@ public class LikeService {
             User user = userRepository.findById(userId).orElseThrow(
                     () -> new IllegalArgumentException("없는 사용자입니다.")
             );
-            likeRepository.save(Like.likeOf(user, post));
+
+            likeRepository.save(Like.builder().post(post).user(user).build());
         }
 
     }
