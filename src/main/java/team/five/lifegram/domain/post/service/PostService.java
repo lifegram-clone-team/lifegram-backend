@@ -16,6 +16,7 @@ import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.entity.User;
 import team.five.lifegram.domain.user.repository.UserRepository;
+import team.five.lifegram.global.imageUpload.S3Upload;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -27,6 +28,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
+    private final S3Upload s3Upload;
 
     @Transactional(readOnly = true)
     public Page<PostResponseDto> getPosts(int page, int size, Long userId) {
@@ -42,14 +44,17 @@ public class PostService {
     public void createPost(PostRequestDto postRequestDto, MultipartFile image, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("존재하지 않는 사용자 입니다."));
-        String image_url = S3Upload(image);
-        Post post = new Post(image_url, postRequestDto.getContent(), user);
-        postRepository.save(post);
-    }
-
-    public String S3Upload(MultipartFile image) {
-        System.out.println("이미지 업로드");
-        return image.getOriginalFilename();
+        if(!image.isEmpty()){
+            try{
+                String imagePath = s3Upload.uploadFiles(image, "images");
+                Post post = new Post(imagePath, postRequestDto.getContent(), user);
+                postRepository.save(post);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }else {
+            throw new IllegalArgumentException("이미지 없이 게시글을 생성할 수 없습니다");
+        }
     }
 
     @Transactional(readOnly = true)
