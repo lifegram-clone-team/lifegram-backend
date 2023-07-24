@@ -2,7 +2,7 @@ name: deploy
 
 on:
   push:
-    branches: [ CI/CD ]
+    branches: [ main ]
 
 env:
   S3_BUCKET_NAME: lifgram-deploy-bucket
