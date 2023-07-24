@@ -33,7 +33,7 @@ public class CommentService {
 
     public void deleteComment(Long postId, Long commentId, Long userId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("없는 게시글입니다.")
+                () -> new IllegalArgumentException("없는 댓글입니다.")
         );
 
         if(comment.getPost().getId() != postId){
