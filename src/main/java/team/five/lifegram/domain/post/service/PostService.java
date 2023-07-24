@@ -77,7 +77,7 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(()->
                 new IllegalArgumentException("게시글이 존재하지 않습니다."));
         if(!post.getUser().getId().equals(user.getId())){
-            throw new IllegalArgumentException("이 게시글에 수정 권한이 없습니다.");
+            throw new IllegalArgumentException("이 게시글에 삭제 권한이 없습니다.");
         }
         postRepository.delete(post);
     }
