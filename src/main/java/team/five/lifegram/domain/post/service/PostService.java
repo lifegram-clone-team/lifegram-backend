@@ -6,18 +6,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
-import org.springframework.transaction.annotation.Transactional;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
 import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.entity.User;
 import team.five.lifegram.domain.user.repository.UserRepository;
-import team.five.lifegram.global.Security.AuthPayload;
 
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Service
@@ -57,13 +55,12 @@ public class PostService {
     }
 
     @Transactional
-    public LocalDateTime updatePost(Long postId, PostRequestDto postRequestDto, AuthPayload authPayload) {
+    public void updatePost(Long postId, PostRequestDto postRequestDto, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("게시글이 존재하지 않습니다."));
-        if (post.getUser().getId() != authPayload.userId()) {
+        if (post.getUser().getId() != userId) {
             throw new IllegalArgumentException("이 게시글에 수정 권한이 없습니다.");
         }
         post.updateContent(postRequestDto.getContent());
-        return post.getUpdatedAt();
     }
 }
