@@ -17,6 +17,10 @@ configurations {
     }
 }
 
+jar{
+    enabled = false
+}
+
 repositories {
     mavenCentral()
 }
@@ -42,8 +46,30 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // S3 ImageUpload
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+}
+
+processResources.dependsOn('securityInfo')
+
+task securityInfo() {
+    copy {
+        from './lifegram-backend-security/application.properties'
+        include '*.properties'
+        into './src/main/resources'
+    }
+
+    copy {
+        from './lifegram-backend-security'
+        include 'keystore.p12'
+        into './src/main/resources/ssl'
+    }
 }
 
 tasks.named('test') {
