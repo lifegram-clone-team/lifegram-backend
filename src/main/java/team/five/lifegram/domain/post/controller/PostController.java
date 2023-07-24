@@ -30,7 +30,7 @@ public class PostController {
     }
 
     @PostMapping("")
-    public void createPost(@Valid @RequestPart(name = "content") PostRequestDto postRequestDto, @RequestPart MultipartFile image, @AuthenticationPrincipal AuthPayload authPayload) {
+    public void createPost(@Valid @RequestPart(name = "post") PostRequestDto postRequestDto, @RequestPart MultipartFile image, @AuthenticationPrincipal AuthPayload authPayload) {
         Long userId = authPayload.userId();
         postService.createPost(postRequestDto, image, userId);
     }

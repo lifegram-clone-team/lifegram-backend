@@ -21,6 +21,7 @@ public class CommentService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("없는 게시물입니다.")
         );
+
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("없는 사용자입니다.")
         );
@@ -29,4 +30,24 @@ public class CommentService {
 
         commentRepository.save(comment);
     }
+
+    public void deleteComment(Long postId, Long commentId, Long userId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("없는 게시글입니다.")
+        );
+
+        if(comment.getPost().getId() != postId){
+            throw new IllegalArgumentException("해당 게시글에 댓글이 아닙니다.");
+        }
+
+        if(comment.getUser().getId() != userId){
+            throw new IllegalArgumentException("내가 작성한 댓글이 아닙니다.");
+        }
+        commentRepository.delete(comment);
+    }
+
+
+
+
+
 }

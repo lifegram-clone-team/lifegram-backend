@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 public class PostResponseDto {
     private Long postId;
+    private String writerImgUrl;
     private String postImgUrl;
     private String content;
     private Long likeCount;
@@ -22,6 +23,7 @@ public class PostResponseDto {
     public static PostResponseDto of(Post post){
         return PostResponseDto.builder()
                 .postId(post.getId())
+                .writerImgUrl(post.getUser().getImg_url())
                 .postImgUrl(post.getImage_url())
                 .content(post.getContent())
                 .likeCount(1L)
