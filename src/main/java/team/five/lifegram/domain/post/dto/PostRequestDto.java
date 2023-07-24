@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public class PostRequestDto {
     @NotBlank
-    @Size(max = 1024)
+    @Size(max = 2200)
     private String content;
 }

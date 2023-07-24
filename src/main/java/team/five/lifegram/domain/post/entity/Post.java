@@ -25,7 +25,7 @@ public class Post {
     @Column(nullable = false)
     private String image_url;
 
-    @Column(length = 1024, nullable = false)
+    @Column(length = 2200, nullable = false)
     private String content;
 
     @CurrentTimestamp
