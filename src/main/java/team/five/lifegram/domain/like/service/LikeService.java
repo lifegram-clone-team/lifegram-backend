@@ -32,6 +32,7 @@ public class LikeService {
                     () -> new IllegalArgumentException("없는 사용자입니다.")
             );
 
+            //TODO Builder를 사용할 경우 필드를 개행으로 구분을 주죠.
             likeRepository.save(Like.builder().post(post).user(user).build());
         }
 

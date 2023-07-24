@@ -17,6 +17,7 @@ public class Like {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //TODO fetch LAZY 걸어주셔야 합니다.
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

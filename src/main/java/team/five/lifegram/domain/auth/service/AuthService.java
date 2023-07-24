@@ -28,6 +28,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    //TODO 예외 핸들링하는 코드를 작성하고 적절한 예외 던지기
     public TokenResponseDto login(LoginRequestDto loginRequestDto) {
         User user = userRepository.findByEmail(loginRequestDto.email()).orElseThrow(
                 () -> new IllegalArgumentException("이메일이 존재하지 않습니다"));

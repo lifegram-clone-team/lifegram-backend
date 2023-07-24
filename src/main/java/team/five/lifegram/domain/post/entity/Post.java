@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO Entity에는 factory method or builder 패턴을 사용해서 객체를 생성한다.
 @Entity
 @NoArgsConstructor
 @Getter
@@ -22,6 +23,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //TODO 변수명은 카멜케이스를 사용한다.
     @Column(nullable = false)
     private String image_url;
 
