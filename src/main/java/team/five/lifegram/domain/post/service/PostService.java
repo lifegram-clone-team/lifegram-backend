@@ -12,11 +12,15 @@ import team.five.lifegram.domain.like.repository.LikeRepository;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
+import team.five.lifegram.domain.post.dto.UserProfilePostResponseDto;
 import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.entity.User;
 import team.five.lifegram.domain.user.repository.UserRepository;
+import team.five.lifegram.global.Security.AuthPayload;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -69,5 +73,22 @@ public class PostService {
             throw new IllegalArgumentException("이 게시글에 수정 권한이 없습니다.");
         }
         post.updateContent(postRequestDto.getContent());
+    }
+
+    public List<UserProfilePostResponseDto> getUserProfilePost(Long userId, int page, int pageSize) {
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+        List<Post> posts = user.getPosts();
+        int startIndex = page * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, posts.size());
+        List<UserProfilePostResponseDto> userProfilePosts = new ArrayList<>();
+        for (int i = startIndex; i < endIndex; i++) {
+            Post post = posts.get(i);
+            UserProfilePostResponseDto userProfilePostDto = new UserProfilePostResponseDto();
+            userProfilePostDto.setPostId(post.getId());
+            userProfilePostDto.setProfileImgUrl(post.getImage_url());
+            userProfilePosts.add(userProfilePostDto);
+        }
+        return userProfilePosts;
     }
 }

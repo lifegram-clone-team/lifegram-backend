@@ -10,8 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
+import team.five.lifegram.domain.post.dto.UserProfilePostResponseDto;
 import team.five.lifegram.domain.post.service.PostService;
 import team.five.lifegram.global.Security.AuthPayload;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +22,9 @@ import team.five.lifegram.global.Security.AuthPayload;
 public class PostController {
 
     private final PostService postService;
+
+    private int pageSize = 12;
+    private int page = 0;
 
     @GetMapping("")
     public Page<PostResponseDto> getPosts(@RequestParam("page") int page, @RequestParam("size") int size, @AuthenticationPrincipal AuthPayload authPayload) {
@@ -42,5 +48,13 @@ public class PostController {
     public void updatePost (@PathVariable Long postId, @Valid @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal AuthPayload authPayload) {
         Long userId = authPayload.userId();
         postService.updatePost(postId, postRequestDto, userId);
+    }
+
+    @GetMapping("user")
+    public List<UserProfilePostResponseDto> getUserProfilePost (@AuthenticationPrincipal AuthPayload authPayload) {
+        Long userId = authPayload.userId();
+        List<UserProfilePostResponseDto> userProfilePosts = postService.getUserProfilePost(userId, page, pageSize);
+        page++;
+        return userProfilePosts;
     }
 }
