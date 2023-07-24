@@ -6,6 +6,8 @@ import team.five.lifegram.domain.post.entity.Post;
 
 import java.time.LocalDateTime;
 
+import static team.five.lifegram.global.util.HttpUtils.parseS3Url;
+
 @Getter
 @Builder
 public class PostResponseDto {
@@ -23,8 +25,8 @@ public class PostResponseDto {
     public static PostResponseDto of(Post post, boolean isLike){
         return PostResponseDto.builder()
                 .postId(post.getId())
-                .writerImgUrl(post.getUser().getImg_url())
-                .postImgUrl(post.getImage_url())
+                .writerImgUrl(parseS3Url("images/profile",post.getUser().getImg_url()))
+                .postImgUrl(parseS3Url("images/post",post.getImage_url()))
                 .content(post.getContent())
                 .likeCount(Long.valueOf(post.getLikes().size()))
                 .isLike(isLike)
