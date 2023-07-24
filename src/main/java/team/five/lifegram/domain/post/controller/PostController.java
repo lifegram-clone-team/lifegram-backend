@@ -43,4 +43,10 @@ public class PostController {
         Long userId = authPayload.userId();
         postService.updatePost(postId, postRequestDto, userId);
     }
+
+    @DeleteMapping("/{postId}")
+    public void deletePost (@PathVariable Long postId, @AuthenticationPrincipal AuthPayload authPayload) {
+        Long userId = authPayload.userId();
+        postService.deletePost(postId, userId);
+    }
 }
