@@ -14,8 +14,6 @@ import team.five.lifegram.domain.post.dto.UserProfilePostResponseDto;
 import team.five.lifegram.domain.post.service.PostService;
 import team.five.lifegram.global.Security.AuthPayload;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/post")
@@ -51,7 +49,8 @@ public class PostController {
     @GetMapping("user")
     public Page<UserProfilePostResponseDto> getUserProfilePost (@RequestParam("page") int page, @RequestParam("size") int size, @AuthenticationPrincipal AuthPayload authPayload) {
         Long userId = authPayload.userId();
-        return postService.getUserProfilePost(page-1, size, userId);
+        return postService.getUserProfilePost(page - 1, size, userId);
+    }
 
     @DeleteMapping("/{postId}")
     public void deletePost (@PathVariable Long postId, @AuthenticationPrincipal AuthPayload authPayload) {
