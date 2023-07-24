@@ -12,12 +12,16 @@ import team.five.lifegram.domain.like.repository.LikeRepository;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
+import team.five.lifegram.domain.post.dto.UserProfilePostResponseDto;
 import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.entity.User;
 import team.five.lifegram.domain.user.repository.UserRepository;
+import team.five.lifegram.global.Security.AuthPayload;
 import team.five.lifegram.global.imageUpload.S3Upload;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -76,6 +80,16 @@ public class PostService {
         post.updateContent(postRequestDto.getContent());
     }
 
+
+    public Page<UserProfilePostResponseDto> getUserProfilePost(int page, int size, Long userId) {
+        userRepository.findById(userId).orElseThrow(()->
+                new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+        Sort.Direction direction = Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Post> posts = postRepository.findByUserId(userId, pageable);
+        return posts.map(UserProfilePostResponseDto::new);
+
     public void deletePost(Long postId, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("존재하지 않는 사용자 입니다."));
@@ -85,5 +99,6 @@ public class PostService {
             throw new IllegalArgumentException("이 게시글에 삭제 권한이 없습니다.");
         }
         postRepository.delete(post);
+
     }
 }

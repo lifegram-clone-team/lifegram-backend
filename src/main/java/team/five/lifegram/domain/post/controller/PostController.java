@@ -10,8 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
+import team.five.lifegram.domain.post.dto.UserProfilePostResponseDto;
 import team.five.lifegram.domain.post.service.PostService;
 import team.five.lifegram.global.Security.AuthPayload;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,9 +47,16 @@ public class PostController {
         postService.updatePost(postId, postRequestDto, userId);
     }
 
+
+    @GetMapping("user")
+    public Page<UserProfilePostResponseDto> getUserProfilePost (@RequestParam("page") int page, @RequestParam("size") int size, @AuthenticationPrincipal AuthPayload authPayload) {
+        Long userId = authPayload.userId();
+        return postService.getUserProfilePost(page-1, size, userId);
+
     @DeleteMapping("/{postId}")
     public void deletePost (@PathVariable Long postId, @AuthenticationPrincipal AuthPayload authPayload) {
         Long userId = authPayload.userId();
         postService.deletePost(postId, userId);
+
     }
 }
