@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
+    id 'jacoco'
 }
 
 group = 'team.five'
@@ -51,6 +52,7 @@ dependencies {
 
     // S3 ImageUpload
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
+//    implementation 'org.jacoco:jacoco-maven-pugin:0.8.11-SNAPSHOT'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -74,4 +76,33 @@ task securityInfo() {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory = layout.buildDirectory.dir("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = false;
+        csv.required = false;
+        html.outputLocation = layout.buildDirectory.dir("$buildDir/reports/html-report")
+    }
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = "CLASS"
+
+            limit {
+                counter = "BRANCH"
+                value = "COVEREDRATIO"
+                minimum = 0.80
+            }
+        }
+    }
 }
