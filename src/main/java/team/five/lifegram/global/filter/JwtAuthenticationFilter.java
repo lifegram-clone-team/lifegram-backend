@@ -16,6 +16,9 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    //TODO var 사용하지 않기. 타입 명확하게 명시하기.
+    //TODO println은 삭제하기 log로 남기기
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -41,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    // TODO 적당한 클래스를 만들어 이동해야 할듯.
     private String getJwtFromRequest(HttpServletRequest request) {
         var bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

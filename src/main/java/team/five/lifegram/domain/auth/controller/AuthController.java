@@ -23,6 +23,7 @@ public class AuthController {
         authService.signup(signupRequestDto);
     }
 
+    //TODO 모든 시작하는 괄호는 앞 문자와 한 칸 띈다.
     @PostMapping("/login")
     public TokenResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDto){
         return authService.login(loginRequestDto);

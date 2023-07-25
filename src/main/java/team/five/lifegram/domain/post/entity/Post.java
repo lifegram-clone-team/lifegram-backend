@@ -9,37 +9,33 @@ import org.hibernate.annotations.UpdateTimestamp;
 import team.five.lifegram.domain.comment.entity.Comment;
 import team.five.lifegram.domain.like.entity.Like;
 import team.five.lifegram.domain.user.entity.User;
+import team.five.lifegram.global.type.BaseTime;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO Entity에는 factory method or builder 패턴을 사용해서 객체를 생성한다.
 @Entity
 @NoArgsConstructor
 @Getter
-public class Post {
+public class Post extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //TODO 변수명은 카멜케이스를 사용한다.
     @Column(nullable = false)
     private String image_url;
 
     @Column(length = 2200, nullable = false)
     private String content;
 
-    @CurrentTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 

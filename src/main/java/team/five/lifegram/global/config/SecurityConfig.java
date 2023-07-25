@@ -46,6 +46,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    //TODO Front 서버가 올라가면 URL 한정해야 함.
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

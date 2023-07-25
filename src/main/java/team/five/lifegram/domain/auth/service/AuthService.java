@@ -3,6 +3,7 @@ package team.five.lifegram.domain.auth.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team.five.lifegram.domain.auth.dto.LoginRequestDto;
 import team.five.lifegram.domain.auth.dto.SignupRequestDto;
 import team.five.lifegram.domain.auth.dto.TokenResponseDto;
@@ -28,6 +29,8 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    //TODO 예외 핸들링하는 코드를 작성하고 적절한 예외 던지기
+    @Transactional(readOnly = true)
     public TokenResponseDto login(LoginRequestDto loginRequestDto) {
         User user = userRepository.findByEmail(loginRequestDto.email()).orElseThrow(
                 () -> new IllegalArgumentException("이메일이 존재하지 않습니다"));

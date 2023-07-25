@@ -30,6 +30,9 @@ public class PostService {
     private final LikeRepository likeRepository;
     private final S3Upload s3Upload;
 
+    //TODO 중복되는 로직을 하나의 함수로 만들어서 사용한다.
+    //TODO 관련있는 코드가 아니면 1칸 줄 간격을 가진다.
+    //TODO 단순히 조회만 하는 메서드의 경우 Transactional(readOnly = true)를 걸어준다. DB 쓰기 방지 및 최적화를 위해서 입니다.
     @Transactional(readOnly = true)
     public Page<PostResponseDto> getPosts(int page, int size, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(()->
@@ -77,7 +80,7 @@ public class PostService {
         post.updateContent(postRequestDto.getContent());
     }
 
-
+    @Transactional(readOnly = true)
     public Page<UserProfilePostResponseDto> getUserProfilePost(int page, int size, Long userId) {
         userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 사용자 입니다."));
