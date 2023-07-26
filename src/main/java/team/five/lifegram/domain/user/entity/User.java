@@ -2,12 +2,9 @@ package team.five.lifegram.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CurrentTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.global.type.BaseTime;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -34,4 +31,14 @@ public class User extends BaseTime {
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
+
+    @OneToMany(mappedBy = "fromUser")
+    private List<Follow> following;
+
+    @OneToMany(mappedBy = "toUser")
+    private List<Follow> follower;
+
+    public void updateImgUrl(String imgUrl) {
+        this.img_url = imgUrl;
+    }
 }

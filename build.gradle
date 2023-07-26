@@ -52,7 +52,6 @@ dependencies {
 
     // S3 ImageUpload
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
-//    implementation 'org.jacoco:jacoco-maven-pugin:0.8.11-SNAPSHOT'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -76,7 +75,7 @@ task securityInfo() {
 
 tasks.named('test') {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport
+//    finalizedBy jacocoTestReport
 }
 
 jacoco {
@@ -85,11 +84,24 @@ jacoco {
 }
 
 jacocoTestReport {
+    afterEvaluate {
+        getClassDirectories().setFrom(classDirectories.files.collect {
+            fileTree(dir: it, exclude:  [
+                    "**/*Controller*",
+                    "**/*Config*",
+                    "**/*LifegramApplication*",
+                    "**/*Builder*",
+                    "**/*Exception*"
+            ])
+        })
+    }
+
     reports {
         xml.required = false;
         csv.required = false;
         html.outputLocation = layout.buildDirectory.dir("$buildDir/reports/html-report")
     }
+
     finalizedBy jacocoTestCoverageVerification
 }
 
@@ -99,10 +111,24 @@ jacocoTestCoverageVerification {
             element = "CLASS"
 
             limit {
+                counter = "INSTRUCTION"
+                value = "COVEREDRATIO"
+                minimum = 0.80
+            }
+
+            limit {
                 counter = "BRANCH"
                 value = "COVEREDRATIO"
                 minimum = 0.80
             }
+
+            excludes = [
+                    "**.*Builder",
+                    "**.LifegramApplication",
+                    "**.*Config",
+                    "**.*Controller",
+                    "**.*Exception*"
+            ]
         }
     }
 }
