@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
 import team.five.lifegram.domain.like.repository.LikeRepository;
+import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
@@ -17,12 +18,13 @@ import team.five.lifegram.domain.user.repository.UserRepository;
 import team.five.lifegram.global.imageUpload.S3Upload;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -123,7 +125,7 @@ class PostServiceTest {
 
         @Test
         @DisplayName("이미지 변환 실패")
-        void createPostConvertFailTest() {
+        void createPostConvertFailTest() throws Exception{
 
         }
     }
@@ -251,7 +253,7 @@ class PostServiceTest {
         }
 
         @Test
-        @DisplayName("게시글 목록 조회 시 해당 user_id 유저 존재 하지 않음 실패")
+        @DisplayName("게시글 목록 조회 시 해당 userId 유저 존재 하지 않음 실패")
         void getPostsNoUserTest() {
             // given
             int page = 1;
@@ -266,6 +268,71 @@ class PostServiceTest {
             // then
             assertEquals("존재하지 않는 사용자 입니다.", exception.getMessage());
         }
+    }
+
+    @Nested
+    @DisplayName("게시글 상세 조회 테스트")
+    class GetDetailPost {
+
+        @Test
+        @DisplayName("게시글 상세 조회 테스트 성공")
+        void getDetailPostSuccessTest() {
+            // given
+            Long postId = 1L;
+            Long userId = 1L;
+            User user = User.builder()
+                    .id(userId)
+                    .build();
+            given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
+            Post post = new Post("testImgUrl","testContent",user);
+            given(postRepository.findById(postId)).willReturn(Optional.of(post));
+            boolean isLike = false;
+            given(likeRepository.existsByUserIdAndPostId(any(), any())).willReturn(isLike);
+            PostService postService = new PostService(postRepository,userRepository,likeRepository,s3Upload);
+
+            // when
+            DetailPostResponseDto detailPost = postService.getDetailPost(postId, userId);
+
+            // then
+            assertEquals(detailPost.getContent(), post.getContent());
+        }
+
+        @Test
+        @DisplayName("게시글 상세 조회 시 해당 userId 유저 존재 하지 않음 실패")
+        void getDetailPostNoUserTest() {
+            // given
+            Long postId = 1L;
+            Long userId = 1L;
+            PostService postService = new PostService(postRepository,userRepository,likeRepository,s3Upload);
+
+            // when
+            Exception exception = assertThrows(IllegalArgumentException.class, ()->
+                    postService.getDetailPost(postId, userId));
+
+            // then
+            assertEquals("존재하지 않는 사용자 입니다.", exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("게시글 상세 조회 시 해당 postId Post 존재 하지 않음 실패")
+        void getDetailPostNoPostTest() {
+            // given
+            Long postId = 1L;
+            Long userId = 1L;
+            User user = User.builder()
+                    .id(userId)
+                    .build();
+            given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
+            PostService postService = new PostService(postRepository,userRepository,likeRepository,s3Upload);
+
+            // when
+            Exception exception = assertThrows(IllegalArgumentException.class, ()->
+                    postService.getDetailPost(postId, userId));
+
+            // then
+            assertEquals("게시글이 존재하지 않습니다.", exception.getMessage());
+        }
+
     }
 
 }
