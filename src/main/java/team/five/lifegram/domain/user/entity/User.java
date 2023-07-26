@@ -32,6 +32,12 @@ public class User extends BaseTime {
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
+    @OneToMany(mappedBy = "fromUser")
+    private List<Follow> following;
+
+    @OneToMany(mappedBy = "toUser")
+    private List<Follow> follower;
+
     public void updateImgUrl(String imgUrl) {
         this.img_url = imgUrl;
     }
