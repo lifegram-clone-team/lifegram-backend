@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
@@ -232,7 +231,7 @@ class PostServiceTest {
     }
 
     @Nested
-    @DisplayName("게시글 전체 조회 테스트")
+    @DisplayName("게시글 목록 조회 테스트")
     class GetPosts {
         @Mock
         PostRepository postRepository;
@@ -246,7 +245,7 @@ class PostServiceTest {
         @Mock
         S3Upload s3Upload;
         @Test
-        @DisplayName("게시글 전제 조회 테스트 성공")
+        @DisplayName("게시글 목록 조회 테스트 성공")
         void getPostSuccessTest() {
             // given
             int page = 1;
@@ -274,7 +273,7 @@ class PostServiceTest {
         }
 
         @Test
-        @DisplayName("게시글 전체 조회 시 해당 user_id 유저 존재 하지 않음 실패")
+        @DisplayName("게시글 목록 조회 시 해당 user_id 유저 존재 하지 않음 실패")
         void getPostsNoUserTest() {
             // given
             int page = 1;
