@@ -1,17 +1,14 @@
 package team.five.lifegram.domain.post.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CurrentTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.Setter;
 import team.five.lifegram.domain.comment.entity.Comment;
 import team.five.lifegram.domain.like.entity.Like;
 import team.five.lifegram.domain.user.entity.User;
 import team.five.lifegram.global.type.BaseTime;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +16,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 public class Post extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

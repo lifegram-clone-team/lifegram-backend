@@ -1,20 +1,14 @@
 package team.five.lifegram.domain.post.service;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.TestInstances;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 import team.five.lifegram.domain.like.repository.LikeRepository;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
-import team.five.lifegram.domain.post.dto.PostResponseDto;
 import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.entity.User;
@@ -22,10 +16,10 @@ import team.five.lifegram.domain.user.repository.UserRepository;
 import team.five.lifegram.global.imageUpload.S3Upload;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
