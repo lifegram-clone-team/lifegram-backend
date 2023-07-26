@@ -12,7 +12,6 @@ import team.five.lifegram.domain.like.repository.LikeRepository;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
-import team.five.lifegram.domain.post.dto.UserProfilePostResponseDto;
 import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.entity.User;
@@ -22,6 +21,7 @@ import team.five.lifegram.global.imageUpload.S3Upload;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -401,7 +401,6 @@ class PostServiceTest {
                     .id(userId)
                     .build();
             PostRequestDto postRequestDto = new PostRequestDto("testContent");
-            given(userRepository.findById(userId)).willReturn(Optional.of(user));
             Post post = new Post("", "", user);
             given(postRepository.findById(postId)).willReturn(Optional.of(post));
 
@@ -421,12 +420,11 @@ class PostServiceTest {
             Long postId = 1L;
             Long userId = 1L;
             User user = User.builder().build();
-            given(userRepository.findById(userId)).willReturn(Optional.of(user));
             PostService postService = new PostService(postRepository, userRepository, likeRepository, s3Upload);
             PostRequestDto postRequestDto = new PostRequestDto("testContent");
 
             // when
-            Exception exception = assertThrows(IllegalArgumentException.class, () ->
+            Exception exception = assertThrows(NoSuchElementException.class, () ->
                     postService.updatePost(postId, postRequestDto, userId));
 
             // then
@@ -448,7 +446,6 @@ class PostServiceTest {
                     .id(updaterUserId)
                     .build();
 
-            given(userRepository.findById(updaterUserId)).willReturn(Optional.of(updaterUser));
             Post post = new Post("", "", writerUser);
             given(postRepository.findById(postId)).willReturn(Optional.of(post));
             PostService postService = new PostService(postRepository, userRepository, likeRepository, s3Upload);
