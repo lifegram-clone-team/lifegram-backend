@@ -39,15 +39,16 @@ public class UserService {
     public void updateUserProfile(MultipartFile image, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("존재하지 않는 사용자 입니다."));
-        if(!image.isEmpty()) {
+
+        if(image == null || image.isEmpty()) {
+            user.updateImgUrl("default.jpeg");
+        }else {
             try {
                 String imagePath = s3Upload.uploadFiles(image, "images/profile");
                 user.updateImgUrl(imagePath);
             } catch (Exception e){
                 e.printStackTrace();
             }
-        }else {
-            throw new IllegalArgumentException("이미지 없이 프로필 사진을 수정할 수 없습니다.");
         }
     }
 

@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PutMapping("")
-    public void updateUserProfile(@RequestPart(name = "image") MultipartFile image, @AuthenticationPrincipal AuthPayload authPayload) {
+    public void updateUserProfile(@RequestPart(name = "image", required = false) MultipartFile image, @AuthenticationPrincipal AuthPayload authPayload) {
         Long userId = authPayload.userId();
         userService.updateUserProfile(image, userId);
     }
