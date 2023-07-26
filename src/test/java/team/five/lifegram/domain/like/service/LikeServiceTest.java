@@ -57,9 +57,6 @@ class LikeServiceTest {
         Long postId = 1L;
         Long userId = 1L;
 
-        Post post = new Post();
-        User user = User.builder().build();
-
         LikeService likeService = new LikeService(likeRepository, postRepository, userRepository);
 
         // when
@@ -78,7 +75,6 @@ class LikeServiceTest {
         Long userId = 1L;
 
         Post post = new Post();
-        User user = User.builder().build();
 
         given(postRepository.findById(postId)).willReturn(Optional.of(post));
 
