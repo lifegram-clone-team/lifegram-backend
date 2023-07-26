@@ -12,6 +12,7 @@ import team.five.lifegram.domain.like.repository.LikeRepository;
 import team.five.lifegram.domain.post.dto.DetailPostResponseDto;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
 import team.five.lifegram.domain.post.dto.PostResponseDto;
+import team.five.lifegram.domain.post.dto.UserProfilePostResponseDto;
 import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.entity.User;
@@ -335,5 +336,134 @@ class PostServiceTest {
         }
 
     }
+
+    @Nested
+    @DisplayName("유저 프로필 게시글 목록 조회 테스트")
+    class GetUserProfilePost {
+
+        @Test
+        @DisplayName("유저 프로필 게시글 목록 조회 테스트 성공")
+        void getUserProfilePostSuccessTest() {
+            // given
+            int page = 1;
+            int size = 12;
+            Long userId = 1L;
+            User user = User.builder()
+                    .id(userId)
+                    .build();
+            given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+            List<Post> posts = new ArrayList<>();
+            for(int i = 0 ; i < 12; i++){
+                Post post = new Post(String.valueOf(i),String.valueOf(i), user);
+                posts.add(post);
+            }
+            Page<Post> PagePosts = new PageImpl<>(posts);
+            given(postRepository.findByUserId(userId, pageable)).willReturn(PagePosts);
+            PostService postService = new PostService(postRepository, userRepository, likeRepository, s3Upload);
+
+            // when
+            postService.getUserProfilePost(page, size, userId);
+
+            // then
+
+        }
+
+        @Test
+        @DisplayName("유저 프로필 게시글 목록 조회 시 해당 userId 유저 존재 하지 않음 실패")
+        void getUserProfilePostsNoUserTest() {
+            // given
+            int page = 1;
+            int size = 12;
+            Long userId = 1L;
+            PostService postService = new PostService(postRepository, userRepository, likeRepository, s3Upload);
+
+            // when
+            Exception exception = assertThrows(IllegalArgumentException.class, ()->
+                    postService.getUserProfilePost(page, size, userId));
+
+            // then
+            assertEquals("존재하지 않는 사용자 입니다.", exception.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("게시글 수정 테스트")
+    class UpdatePost {
+
+        @Test
+        @DisplayName("게시글 수정 테스트 성공")
+        void updatePost() {
+            // given
+            Long postId = 1L;
+            Long userId = 1L;
+            User user = User.builder()
+                    .id(userId)
+                    .build();
+            PostRequestDto postRequestDto = new PostRequestDto("testContent");
+            given(userRepository.findById(userId)).willReturn(Optional.of(user));
+            Post post = new Post("", "", user);
+            given(postRepository.findById(postId)).willReturn(Optional.of(post));
+
+            // when
+            PostService postService = new PostService(postRepository, userRepository, likeRepository, s3Upload);
+            postService.updatePost(postId, postRequestDto, userId);
+
+            // then
+            assertEquals("testContent", postRequestDto.getContent());
+
+        }
+
+        @Test
+        @DisplayName("게시글 존재 안함")
+        void updatePostNoPostTest() {
+            // given
+            Long postId = 1L;
+            Long userId = 1L;
+            User user = User.builder().build();
+            given(userRepository.findById(userId)).willReturn(Optional.of(user));
+            PostService postService = new PostService(postRepository, userRepository, likeRepository, s3Upload);
+            PostRequestDto postRequestDto = new PostRequestDto("testContent");
+
+            // when
+            Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                    postService.updatePost(postId, postRequestDto, userId));
+
+            // then
+            assertEquals("게시글이 존재하지 않습니다.", exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("게시글 작성자와 게시글 수정 요청자 다름")
+        void updatePostUserNotMatchedTest() {
+            // given
+            Long postId = 1L;
+            Long writerUserId = 1L;
+            Long updaterUserId = 2L;
+            User writerUser = User.builder()
+                    .id(writerUserId)
+                    .build();
+
+            User updaterUser = User.builder()
+                    .id(updaterUserId)
+                    .build();
+
+            given(userRepository.findById(updaterUserId)).willReturn(Optional.of(updaterUser));
+            Post post = new Post("", "", writerUser);
+            given(postRepository.findById(postId)).willReturn(Optional.of(post));
+            PostService postService = new PostService(postRepository, userRepository, likeRepository, s3Upload);
+            PostRequestDto postRequestDto = new PostRequestDto("testContent");
+
+            // when
+            Exception exception = assertThrows(IllegalArgumentException.class, ()->
+                    postService.updatePost(postId, postRequestDto, updaterUser.getId()));
+
+            // then
+            assertEquals("이 게시글에 수정 권한이 없습니다.", exception.getMessage());
+
+        }
+    }
+
+
 
 }
