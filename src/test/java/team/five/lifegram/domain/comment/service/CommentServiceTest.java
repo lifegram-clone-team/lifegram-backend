@@ -51,7 +51,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("댓글 작성 실패 - 없는 사용자")
-    void writeCommentNotUserTest() {
+    void writeCommentNotUserFailTest() {
         // given
         Long userId = 1L;
         Long postId = 1L;
@@ -72,7 +72,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("댓글 작성 실패 - 없는 게시글")
-    void writeCommentNotPostTest() {
+    void writeCommentNotPostFailTest() {
         // given
         Long userId = 1L;
         Long postId = 1L;
@@ -93,7 +93,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("댓글 삭제 성공")
-    void deleteCommentSuccess() {
+    void deleteCommentSuccessTest() {
         // given
         Long userId = 1L;
         Long commentId = 1L;
@@ -117,7 +117,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("댓글 삭제 실패 - 없는 댓글")
-    void deleteCommentNotComment() {
+    void deleteCommentNotCommentFailTest() {
         // given
         Long userId = 1L;
         Long commentId = 1L;
@@ -141,7 +141,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("댓글 삭제 실패 - 해당 게시글의 댓글이 아님")
-    void deleteCommentDifferentPost() {
+    void deleteCommentDifferentPostFailTest() {
         // given
         Long userId = 1L;
         Long commentId = 1L;
@@ -167,7 +167,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("댓글 삭제 실패 - 해당 게시글의 댓글이 아님")
-    void deleteCommentDifferentUser() {
+    void deleteCommentDifferentUserFailTest() {
         // given
         Long userId = 1L;
         Long commentId = 1L;
