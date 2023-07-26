@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
 import team.five.lifegram.domain.like.repository.LikeRepository;
 import team.five.lifegram.domain.post.dto.PostRequestDto;
@@ -16,6 +17,8 @@ import team.five.lifegram.domain.user.repository.UserRepository;
 import team.five.lifegram.global.imageUpload.S3Upload;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,6 +48,7 @@ class PostServiceTest {
     @Nested
     @DisplayName("게시글 생성 테스트")
     class CreatePost {
+
         @Test
         @DisplayName("게시글 생성 정상")
         void createPostSuccessTest() throws Exception {
@@ -211,6 +215,56 @@ class PostServiceTest {
             // then
             assertEquals("이 게시글에 삭제 권한이 없습니다.", exception.getMessage());
 
+        }
+    }
+
+    @Nested
+    @DisplayName("게시글 목록 조회 테스트")
+    class GetPosts {
+
+        @Test
+        @DisplayName("게시글 목록 조회 테스트 성공")
+        void getPostSuccessTest() {
+            // given
+            int page = 1;
+            int size = 5;
+            Long userId = 1L;
+            User user = User.builder()
+                    .id(userId)
+                    .build();
+            given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+            List<Post> posts = new ArrayList<>();
+            for(int i = 0 ; i < 5; i++){
+                Post post = new Post(String.valueOf(i),String.valueOf(i), user);
+                posts.add(post);
+            }
+            Page<Post> PagePosts = new PageImpl<>(posts);
+            given(postRepository.findAll(pageable)).willReturn(PagePosts);
+            PostService postService = new PostService(postRepository, userRepository, likeRepository, s3Upload);
+
+            // when
+            Page<PostResponseDto> postResponseDtos = postService.getPosts(page, size, userId);
+
+            // then
+            assertEquals(postResponseDtos.toList().get(1).getContent(), posts.stream().map((post)->PostResponseDto.of(post, false)).toList().get(1).getContent());
+        }
+
+        @Test
+        @DisplayName("게시글 목록 조회 시 해당 user_id 유저 존재 하지 않음 실패")
+        void getPostsNoUserTest() {
+            // given
+            int page = 1;
+            int size = 5;
+            Long userId = 1L;
+            PostService postService = new PostService(postRepository, userRepository, likeRepository, s3Upload);
+
+            // when
+            Exception exception = assertThrows(IllegalArgumentException.class, ()->
+                    postService.getPosts(page, size, userId));
+
+            // then
+            assertEquals("존재하지 않는 사용자 입니다.", exception.getMessage());
         }
     }
 
