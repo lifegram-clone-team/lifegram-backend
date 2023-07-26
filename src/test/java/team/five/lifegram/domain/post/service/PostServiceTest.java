@@ -29,7 +29,17 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class PostServiceTest {
 
+    @Mock
+    PostRepository postRepository;
 
+    @Mock
+    UserRepository userRepository;
+
+    @Mock
+    LikeRepository likeRepository;
+
+    @Mock
+    S3Upload s3Upload;
 
     @Test
     @DisplayName("Jacoco Test")
@@ -39,17 +49,7 @@ class PostServiceTest {
     @Nested
     @DisplayName("게시글 생성 테스트")
     class CreatePost {
-        @Mock
-        PostRepository postRepository;
 
-        @Mock
-        UserRepository userRepository;
-
-        @Mock
-        LikeRepository likeRepository;
-
-        @Mock
-        S3Upload s3Upload;
         @Test
         @DisplayName("게시글 생성 정상")
         void createPostSuccessTest() throws Exception {
@@ -132,17 +132,6 @@ class PostServiceTest {
     @Nested
     @DisplayName("게시글 삭제 테스트")
     class DeletePost {
-        @Mock
-        PostRepository postRepository;
-
-        @Mock
-        UserRepository userRepository;
-
-        @Mock
-        LikeRepository likeRepository;
-
-        @Mock
-        S3Upload s3Upload;
 
         @Test
         @DisplayName("게시글 삭제 테스트 성공")
@@ -233,17 +222,7 @@ class PostServiceTest {
     @Nested
     @DisplayName("게시글 목록 조회 테스트")
     class GetPosts {
-        @Mock
-        PostRepository postRepository;
 
-        @Mock
-        UserRepository userRepository;
-
-        @Mock
-        LikeRepository likeRepository;
-
-        @Mock
-        S3Upload s3Upload;
         @Test
         @DisplayName("게시글 목록 조회 테스트 성공")
         void getPostSuccessTest() {
