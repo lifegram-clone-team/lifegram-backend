@@ -5,7 +5,6 @@ import lombok.*;
 import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.user.entity.User;
 
-@Getter
 @Builder
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
