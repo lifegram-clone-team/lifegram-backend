@@ -6,9 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.dto.UserProfileResponseDto;
+import team.five.lifegram.domain.user.dto.UserProfileSearchResponseDto;
 import team.five.lifegram.domain.user.entity.User;
 import team.five.lifegram.domain.user.repository.UserRepository;
 import team.five.lifegram.global.imageUpload.S3Upload;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +44,13 @@ public class UserService {
         }else {
             throw new IllegalArgumentException("이미지 없이 프로필 사진을 수정할 수 없습니다.");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserProfileSearchResponseDto> findUser(String qName, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+        List<User> users = userRepository.findByUserNameContaining(qName);
+        return users.stream().map((finduser) -> UserProfileSearchResponseDto.of(finduser, false)).toList();
     }
 }
