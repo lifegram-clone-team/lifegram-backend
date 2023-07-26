@@ -19,6 +19,15 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public void signup(SignupRequestDto signupRequestDto) {
+        boolean isDupEmail = userRepository.findByEmail(signupRequestDto.email()).isPresent();
+        boolean isDupUserName = userRepository.findByUserName(signupRequestDto.userName()).isPresent();
+
+        if(isDupEmail) {
+            throw new IllegalArgumentException("이메일이 중복됩니다");
+        } else if(isDupUserName) {
+            throw new IllegalArgumentException("유저이름이 중복됩니다");
+        }
+
         User user = User.builder()
                 .email(signupRequestDto.email())
                 .userName(signupRequestDto.userName())

@@ -2,6 +2,8 @@ package team.five.lifegram.global.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import team.five.lifegram.domain.auth.dto.TokenResponseDto;
 
 import java.nio.charset.StandardCharsets;
@@ -10,6 +12,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JwtUtils {
     private static final String secretKey = "LifeGramKeyqazwsxedcddedwdwedewdwedwedeededeqwrer";
     private static final Key SIGNING_KEY = getSigningKey();
