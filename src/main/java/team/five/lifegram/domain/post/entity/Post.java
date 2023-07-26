@@ -1,9 +1,10 @@
 package team.five.lifegram.domain.post.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import team.five.lifegram.domain.comment.entity.Comment;
 import team.five.lifegram.domain.like.entity.Like;
 import team.five.lifegram.domain.user.entity.User;
@@ -15,8 +16,9 @@ import java.util.List;
 //TODO Entity에는 factory method or builder 패턴을 사용해서 객체를 생성한다.
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-@Setter
+@Builder
 public class Post extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
