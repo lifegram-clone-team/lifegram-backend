@@ -75,7 +75,7 @@ task securityInfo() {
 
 tasks.named('test') {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport
+//    finalizedBy jacocoTestReport
 }
 
 jacoco {
