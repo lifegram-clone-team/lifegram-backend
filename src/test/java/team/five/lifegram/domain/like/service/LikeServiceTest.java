@@ -52,6 +52,26 @@ class LikeServiceTest {
     }
 
     @Test
+    @DisplayName("좋아요 취소 성공")
+    void nonLikeSuccessTest(){
+        // Given
+        Long postId = 1L;
+        Long userId = 2L;
+        Like existingLike = Like.builder().build();
+
+        // When
+        when(likeRepository.findByUserIdAndPostId(userId, postId))
+                .thenReturn(Optional.of(existingLike));
+
+
+        LikeService likeService = new LikeService(likeRepository, postRepository, userRepository);
+        likeService.likePost(postId, userId);
+
+        // Then
+        verify(likeRepository, never()).save(any(Like.class));
+    }
+
+    @Test
     @DisplayName("좋아요 실패 - 없는 게시물")
     void likeSuccessFailNotPost(){
         Long postId = 1L;
