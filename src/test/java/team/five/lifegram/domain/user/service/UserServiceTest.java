@@ -15,6 +15,7 @@ import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.dto.UserProfileResponseDto;
 import team.five.lifegram.domain.user.dto.UserProfileSearchResponseDto;
+import team.five.lifegram.domain.user.entity.Follow;
 import team.five.lifegram.domain.user.entity.User;
 import team.five.lifegram.domain.user.repository.FollowRepository;
 import team.five.lifegram.domain.user.repository.UserRepository;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -230,7 +230,9 @@ class UserServiceTest {
             // then
             assertEquals("팔로우 하려는 유저가 존재하지 않습니다.", illegalArgumentException.getMessage());
         }
+    }
 
+    @Nested
     @DisplayName("유저 프로필 업데이트 테스트")
     class UserProfileUpdateTest {
 
