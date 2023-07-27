@@ -14,6 +14,7 @@ import team.five.lifegram.domain.user.repository.FollowRepository;
 import team.five.lifegram.domain.user.repository.UserRepository;
 import team.five.lifegram.global.imageUpload.S3Upload;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserProfile(MultipartFile image, Long userId) {
+    public UserProfileResponseDto updateUserProfile(MultipartFile image, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
@@ -46,10 +47,13 @@ public class UserService {
             try {
                 String imagePath = s3Upload.uploadFiles(image, "images/profile");
                 user.updateImgUrl(imagePath);
-            } catch (Exception e){
-                e.printStackTrace();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+
+
         }
+        return new UserProfileResponseDto(user.getUserName(), user.getImg_url(), user.getPosts().size());
     }
 
     @Transactional(readOnly = true)

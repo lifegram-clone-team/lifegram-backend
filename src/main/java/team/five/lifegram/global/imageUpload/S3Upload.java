@@ -36,7 +36,7 @@ public class S3Upload {
     private String upload(File uploadFile, String path) {
         String fileName = uploadFile.getName();
         putS3(uploadFile, path + "/" + fileName);
-        removeNewFile(uploadFile);
+        uploadFile.delete();
         return fileName;
     }
 
@@ -46,14 +46,6 @@ public class S3Upload {
                         .withCannedAcl(CannedAccessControlList.PublicRead)    // PublicRead 권한으로 업로드 됨
         );
         return fileName;
-    }
-
-    private void removeNewFile(File targetFile) {
-        if(targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
-        }else {
-            log.info("파일이 삭제되지 못했습니다.");
-        }
     }
 
     //TODO 메서드 명과 변수 명은 읽었을 때 용도를 바로 알 수 있도록 명확하게 작성하기
