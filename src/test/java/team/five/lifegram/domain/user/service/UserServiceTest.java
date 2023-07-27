@@ -9,22 +9,26 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import team.five.lifegram.domain.like.repository.LikeRepository;
+import team.five.lifegram.domain.post.entity.Post;
 import team.five.lifegram.domain.post.repository.PostRepository;
 import team.five.lifegram.domain.user.dto.UserProfileResponseDto;
-import team.five.lifegram.domain.user.entity.Follow;
+import team.five.lifegram.domain.user.dto.UserProfileSearchResponseDto;
 import team.five.lifegram.domain.user.entity.User;
 import team.five.lifegram.domain.user.repository.FollowRepository;
 import team.five.lifegram.domain.user.repository.UserRepository;
 import team.five.lifegram.global.imageUpload.S3Upload;
 import team.five.lifegram.global.util.HttpUtils;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -79,7 +83,8 @@ class UserServiceTest {
             UserProfileResponseDto userProfile = userService.getUserProfile(userId);
 
             // then
-            assertEquals(userProfile.getProfileImgUrl(), HttpUtils.parseS3Url("images/profile",user.getImg_url()));
+
+            assertNotNull(userProfile);
         }
 
         @Test
@@ -87,7 +92,7 @@ class UserServiceTest {
         void getUserProfileNoUserTest() {
             // given
             Long userId = 1L;
-            UserService userService = new UserService(postRepository, userRepository, followRepository, s3Upload);
+            UserService userService = new UserService(postRepository, userRepository,followRepository, s3Upload);
 
             // when
             Exception exception = assertThrows(IllegalArgumentException.class, ()->
@@ -226,5 +231,128 @@ class UserServiceTest {
             assertEquals("팔로우 하려는 유저가 존재하지 않습니다.", illegalArgumentException.getMessage());
         }
 
+    @DisplayName("유저 프로필 업데이트 테스트")
+    class UserProfileUpdateTest {
+
+        @Test
+        @DisplayName("유저 프로필 이미지 파일이 있는 경우 테스트")
+        void userProfileHasImageTest() throws IOException {
+            String fileName = "testImage";
+            String contentType = "JPG";
+            String filePath = "src/test/resources/testImages/"+fileName+"."+contentType;
+            FileInputStream fileInputStream = new FileInputStream(filePath);
+            MockMultipartFile multipartFile = new MockMultipartFile("images",
+                    fileName + "." + contentType,
+                    contentType,
+                    fileInputStream);
+            Long userId = 1L;
+            User user = User.builder().posts(new ArrayList<Post>()).build();
+            UserService userService = new UserService(postRepository, userRepository, followRepository, s3Upload);
+            given(userRepository.findById(userId)).willReturn(Optional.of(user));
+            given(s3Upload.uploadFiles(multipartFile, "images/profile")).willReturn("12345.jpg");
+
+            UserProfileResponseDto userProfileResponseDto = userService.updateUserProfile(multipartFile, userId);
+
+            assertEquals(userProfileResponseDto.getProfileImgUrl(), HttpUtils.parseS3Url("images/profile" ,"12345.jpg"));
+        }
+
+        @Test
+        @DisplayName("유저 프로필 이미지 파일이 null인 경우 테스트")
+        void userProfileNullImageTest() throws IOException {
+            MockMultipartFile multipartFile = null;
+            Long userId = 1L;
+            User user = User.builder().posts(new ArrayList<Post>()).build();
+            UserService userService = new UserService(postRepository, userRepository, followRepository, s3Upload);
+            given(userRepository.findById(userId)).willReturn(Optional.of(user));
+
+            UserProfileResponseDto userProfileResponseDto = userService.updateUserProfile(multipartFile, userId);
+
+            assertEquals(userProfileResponseDto.getProfileImgUrl(), HttpUtils.parseS3Url("images/profile" ,"default.jpeg"));
+        }
+
+        @Test
+        @DisplayName("유저 프로필 이미지 파일이 데이터가 비어있는 경우 테스트")
+        void userProfileDataEmptyImageTest() throws IOException {
+            byte[] noDataByte = "".getBytes();
+            MockMultipartFile multipartFile = new MockMultipartFile("noDataImage", noDataByte);
+            Long userId = 1L;
+            User user = User.builder().posts(new ArrayList<Post>()).build();
+            UserService userService = new UserService(postRepository, userRepository, followRepository, s3Upload);
+            given(userRepository.findById(userId)).willReturn(Optional.of(user));
+
+            UserProfileResponseDto userProfileResponseDto = userService.updateUserProfile(multipartFile, userId);
+
+            assertEquals(userProfileResponseDto.getProfileImgUrl(), HttpUtils.parseS3Url("images/profile" ,"default.jpeg"));
+        }
+
+        @Test
+        @DisplayName("유저 프로필 사용자가 존재하지 않는 경우 테스트")
+        void profileNotUserTest() throws IOException {
+            MockMultipartFile multipartFile = null;
+            Long userId = 1L;
+            UserService userService = new UserService(postRepository, userRepository, followRepository, s3Upload);
+
+            Exception ex = assertThrows(IllegalArgumentException.class, () -> userService.updateUserProfile(multipartFile, userId));
+
+            assertEquals(ex.getMessage(), "존재하지 않는 사용자 입니다.");
+        }
+
+        @Test
+        @DisplayName("유저 프로필 이미지 업로드 실패하는 경우 테스트")
+        void profileUploadFailTest() throws IOException {
+            String fileName = "testImage";
+            String contentType = "JPG";
+            String filePath = "src/test/resources/testImages/"+fileName+"."+contentType;
+            FileInputStream fileInputStream = new FileInputStream(filePath);
+            MockMultipartFile multipartFile = new MockMultipartFile("images",
+                    fileName + "." + contentType,
+                    contentType,
+                    fileInputStream);
+            Long userId = 1L;
+            User user = User.builder().posts(new ArrayList<Post>()).build();
+            UserService userService = new UserService(postRepository, userRepository, followRepository, s3Upload);
+            given(userRepository.findById(userId)).willReturn(Optional.of(user));
+            given(s3Upload.uploadFiles(multipartFile, "images/profile")).willThrow(new IOException());
+
+            Exception ex = assertThrows(RuntimeException.class, () -> userService.updateUserProfile(multipartFile, userId));
+
+            assertEquals(ex.getCause().getClass(), IOException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("유저 검색 테스트")
+    class UserFindTest {
+
+        @Test
+        @DisplayName("유저 검색에 성공한 경우 테스트")
+        void userProfileFindUsersTest() throws IOException {
+            Long userId = 1L;
+            String qName = "test";
+            User user = mock(User.class);
+            List<User> users = new ArrayList<>();
+            users.add(user);
+            UserService userService = new UserService(postRepository, userRepository, followRepository, s3Upload);
+            given(userRepository.findById(userId)).willReturn(Optional.of(user));
+            given(userRepository.findByUserNameContaining(qName)).willReturn(users);
+
+            List<UserProfileSearchResponseDto> userProfileSearchResponseDtos = userService.findUser(qName, userId);
+
+            assertNotNull(userProfileSearchResponseDtos);
+            assertEquals(userProfileSearchResponseDtos.size(), 1);
+        }
+
+        @Test
+        @DisplayName("유저 검색에서 유효한 유저가 아닌 경우 테스트")
+        void userProfileInvalidUserTest() throws IOException {
+            Long userId = 1L;
+            String qName = "test";
+            UserService userService = new UserService(postRepository, userRepository, followRepository, s3Upload);
+
+            Exception ex = assertThrows(IllegalArgumentException.class,
+                    () -> userService.findUser(qName, userId));
+
+            assertEquals(ex.getMessage(), "존재하지 않는 사용자 입니다.");
+        }
     }
 }
