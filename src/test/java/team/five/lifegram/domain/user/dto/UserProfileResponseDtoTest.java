@@ -1,6 +1,7 @@
 package team.five.lifegram.domain.user.dto;
 
 import org.junit.jupiter.api.Test;
+import team.five.lifegram.global.util.HttpUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,7 +19,7 @@ class UserProfileResponseDtoTest {
 
         // Then
         assertEquals(userName, dto.getUserName());
-        assertEquals("images/profile/example.jpg", dto.getProfileImgUrl());
+        assertEquals(HttpUtils.parseS3Url("images/profile", "example.jpg"), dto.getProfileImgUrl());
         assertEquals(postCount, dto.getPostCount());
     }
 }
