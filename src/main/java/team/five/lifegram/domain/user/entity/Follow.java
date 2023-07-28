@@ -2,12 +2,11 @@ package team.five.lifegram.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import team.five.lifegram.global.jacoco.Generated;
 import team.five.lifegram.global.type.BaseTime;
 
 @Entity
-@Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Follow extends BaseTime {
     @Id
@@ -19,4 +18,10 @@ public class Follow extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User toUser;
+    @Generated
+    protected Follow(){}
+
+    public User getToUser(){
+        return this.toUser;
+    }
 }

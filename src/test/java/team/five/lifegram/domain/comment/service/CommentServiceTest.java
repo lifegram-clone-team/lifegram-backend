@@ -100,8 +100,8 @@ class CommentServiceTest {
         Long postId = 1L;
 
         User user = User.builder().id(userId).build();
-        Post post = new Post();
-        post.setId(postId);
+        Post post = Post.builder().id(postId).build();
+
         Comment comment = Comment.builder().post(post).user(user).build();
 
         CommentService commentService = new CommentService(commentRepository, userRepository, postRepository);
@@ -124,8 +124,7 @@ class CommentServiceTest {
         Long postId = 1L;
 
         User user = User.builder().id(userId).build();
-        Post post = new Post();
-        post.setId(postId);
+        Post post = Post.builder().id(postId).build();
         Comment comment = Comment.builder().post(post).user(user).build();
 
         CommentService commentService = new CommentService(commentRepository, userRepository, postRepository);
@@ -148,8 +147,7 @@ class CommentServiceTest {
         Long postId = 1L;
 
         User user = User.builder().id(userId).build();
-        Post post = new Post();
-        post.setId(2L);
+        Post post = Post.builder().id(2L).build();
         Comment comment = Comment.builder().post(post).user(user).build();
 
         CommentService commentService = new CommentService(commentRepository, userRepository, postRepository);
@@ -174,8 +172,7 @@ class CommentServiceTest {
         Long postId = 1L;
 
         User user = User.builder().id(2L).build();
-        Post post = new Post();
-        post.setId(postId);
+        Post post = Post.builder().id(postId).build();
         Comment comment = Comment.builder().post(post).user(user).build();
 
         CommentService commentService = new CommentService(commentRepository, userRepository, postRepository);
